@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 *,
 ::before,
 ::after {
@@ -9,16 +13,17 @@
 label {
   font-size: 20px;
 }
-html,
+/* html,
 body {
   height: 100%;
   width: 100%;
-}
+} */
 
 body {
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
 }
 
 .container {

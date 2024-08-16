@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import { handleError, handleSuccess } from "../utils";
+import Navbar from "../components/Navbar";
+// import Navbar from "../components/Navbar";
 
 function Home() {
   const [loggedInUser, setLoggedInUser] = useState("");
@@ -12,6 +14,10 @@ function Home() {
   useEffect(() => {
     const user = localStorage.getItem("loggedInuser");
     setLoggedInUser(user);
+
+    // Load cart from localStorage
+    const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
+    setCart(savedCart);
   }, []);
 
   const handleLogout = () => {
@@ -33,7 +39,7 @@ function Home() {
       };
       const response = await fetch(url, options);
       const result = await response.json();
-      setProduct(result);
+      setProduct(Array.isArray(result) ? result : []);
     } catch (error) {
       handleError(error);
     }
@@ -41,7 +47,7 @@ function Home() {
 
   useEffect(() => {
     fetchProducts();
-  }, []); // Runs once on component mount
+  }, []);
 
   const addToCart = (item) => {
     const updatedCart = [...cart, item];
@@ -52,28 +58,27 @@ function Home() {
 
   return (
     <div>
-      <h1>Welcome, {loggedInUser}</h1>
-      <button onClick={handleLogout}>Logout</button>
+      <Navbar />
       <div
         style={{
-          display: "flex",
-          flexDirection: "row",
-
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr 1fr 1fr",
+          padding: "10px",
           gap: "20px",
-          alignItems: "center",
-          justifyItems: "center",
-          padding: "20px",
         }}
       >
         {product?.map((item) => (
           <div
             key={item.name}
             style={{
+              display: "flex",
+              flexDirection: "row",
               textAlign: "center",
               boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-              padding: "10px",
+              // padding: "20px",
               borderRadius: "8px",
               backgroundColor: "#f9f9f9",
+              width: "320px",
             }}
           >
             <img
@@ -87,9 +92,17 @@ function Home() {
                 marginBottom: "10px",
               }}
             />
-            <p style={{ fontWeight: "bold", margin: "0" }}>{item.name}</p>
-            <p style={{ color: "#888", margin: "5px 0" }}>{item.price}</p>
-            <button onClick={() => addToCart(item)}>Add to Cart</button>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+              }}
+            >
+              <p style={{ fontWeight: "bold", margin: "0" }}>{item.name}</p>
+              <p style={{ color: "#888", margin: "5px 0" }}>{item.price}</p>
+              <p style={{ color: "#888", margin: "5px 0" }}>{item.category}</p>
+            </div>
           </div>
         ))}
       </div>
